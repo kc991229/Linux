@@ -6,7 +6,7 @@
 
 int main()
 {
-    int ret=mkfifo("myfifo",0664);
+    int ret=mkfifo("luoyu",0664);
     if (ret < 0)
         perror("mkfifo");
     return 0;

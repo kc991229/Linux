@@ -5,7 +5,7 @@
 
 int main()
 {
-    int shmid=shmget(shmkey,1024,IPC_CREAT|0664);
+    int shmid=shmget(IPC_PRIVATE,1024,IPC_CREAT|0664);
     if (shmid < 0)
     {
         perror("shmget");
@@ -20,9 +20,7 @@ int main()
     int i=0;
     while (1)
     {
-        fflush(NULL);
         sprintf((char*)adder,"%s -%d","xiao chen",i);
-        printf("%s - %d\n","xiao chen",i);
         i++;
         sleep(2);
     }
