@@ -1,3 +1,6 @@
+//
+//    本程序用于arm-Linux实验课程设计
+// 
 #include <linux/miscdevice.h>
 #include <linux/delay.h>
 #include <asm/irq.h>
