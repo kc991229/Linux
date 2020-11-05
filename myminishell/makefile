@@ -1,4 +1,4 @@
-minishell:minishell.c
+minishell:myminishell.c
 	gcc $^ -o $@
 
 clean:
