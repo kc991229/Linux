@@ -14,7 +14,7 @@ int main(int argc,char* argv[])
         return 0;
     //if (us.Bind(ip,port) == 0)
      //   return 0;
-    //组织通信信息
+    //组织通信
     struct sockaddr_in addr;
     addr.sin_family=AF_INET;
     addr.sin_port=htons(port);

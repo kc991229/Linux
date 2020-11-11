@@ -9,7 +9,7 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+//一个udp通信接口使用的类
 class Udpser
 {
     public:
