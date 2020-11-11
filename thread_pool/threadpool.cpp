@@ -7,7 +7,7 @@
 
 #define THREADCOUNT 4
 
-typedef void* (*Handler_t)(int);
+typedef void* (*Handler_t)(int);//一个函数指针的宏
 class ThreadTask
 {
     public:
@@ -19,6 +19,7 @@ class ThreadTask
         ~ThreadTask()
         {                                
         }
+        //从这个接口开始运行
         void Run()
         {
             handler_(data_);                                                
@@ -54,6 +55,7 @@ class ThreadPool
         ~ThreadPool()
         {                           
         }
+        //入线程池
         bool Push(ThreadTask* tt)
         {
             pthread_mutex_lock(&lock_);
@@ -69,7 +71,7 @@ class ThreadPool
             pthread_cond_signal(&cond_);
             return true;                                                                                                            
         }
-
+        //出线程池
         bool Pop(ThreadTask** tt)
         {
             *tt = que_.front();
