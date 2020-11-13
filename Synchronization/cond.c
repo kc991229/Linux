@@ -1,11 +1,11 @@
 #include "stdio.h"
 #include "unistd.h"
 #include "pthread.h"
-
+//吃面条模型
 #define count 2
 int g_noodles = 0;
-pthread_mutex_t lock;
-pthread_cond_t producer_cond;
+pthread_mutex_t lock;//互斥锁
+pthread_cond_t producer_cond;//条件变量
 pthread_cond_t consumer_cond;
 
 //消费者
