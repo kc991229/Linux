@@ -4,15 +4,17 @@
 #include "pthread.h"
 #define count 4
 
-int tickes = 100;
-pthread_mutex_t  lock;
+int tickes = 100;//假设100张票
+pthread_mutex_t  lock;//定义一个互斥锁
 
+//线程开始函数
 void* threadstart(void* arg)
 {
     (void)arg;
     while (1)
     {
         pthread_mutex_lock(&lock);
+        //如果有票
         if (tickes > 0)
         {
             tickes--;
@@ -21,6 +23,7 @@ void* threadstart(void* arg)
         }
         else
         {
+            //没有票，解锁
             pthread_mutex_unlock(&lock);
             break;
         }
