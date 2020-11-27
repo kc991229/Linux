@@ -6,7 +6,7 @@
 
 #define THREADCOUNT 2
 #define TypeData int
-
+//这里使用泛型编程
 template <class T>
 class BlockQueue
 {
@@ -94,6 +94,7 @@ void* producerstart(void* arg)
 int main()
 {
     BlockQueue<TypeData>* bq=new BlockQueue<TypeData>(10);
+    //用于存放线程tid
     pthread_t consumer_tid[THREADCOUNT];
     pthread_t producer_tid[THREADCOUNT];
     int i=0,ret=0;
