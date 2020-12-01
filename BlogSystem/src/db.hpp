@@ -5,7 +5,7 @@
 #include <mysql/mysql.h>
 #include <jsoncpp/json/json.h>
 
-#define MYSQL_HOST   "locahost"
+#define MYSQL_HOST   "localhost"
 #define MYSQL_DB     "blog_system"
 #define MYSQL_USER   "root"
 #define MYSQL_PASS   "thunder1314"
@@ -20,7 +20,7 @@ namespace blog_system
         if (mysql == NULL)
         {
             printf("mysql error\n");
-            return NULL;
+           return NULL;
         }
 
             //2.连接mysql服务器 接口函数：mysql_real_connect
