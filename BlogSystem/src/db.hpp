@@ -234,7 +234,7 @@ namespace blog_system
             }
             bool GetOne(int user_id,Json::Value* user)
             {
-#define SELECT_USERONE "select name from table_user where id =%d;"
+#define SELECT_USERONE "select name from table_user where id ='%d';"
                 char tmp[4096]={0};
                 sprintf(tmp,SELECT_USERONE,user_id);
                 bool ret = blog_system::MysqlQuery(_mysql,tmp);
@@ -268,11 +268,11 @@ namespace blog_system
             bool Insert(const Json::Value& blog)
             {
                 //id  tag_id user_id title  content
-#define INSERT_BLOG "insert table_blog values(null,%d,%d,'%s'%s',now());"
+#define INSERT_BLOG "insert table_blog values(null,%d,%d,'%s','%s',now());"
                 char tmp[4096]={0};
                 //user["name"].asCString()表示以c风格返回
-                sprintf(tmp,INSERT_BLOG,blog["tag_id"].asInt(), blog["user_id"].asInt(),blog["title"].asCString(),\
-                        blog["content"].asCString());
+                sprintf(tmp,INSERT_BLOG,blog["tag_id"].asInt(), blog["user_id"].asInt(),blog["title"].asCString(), blog["content"].asCString());
+                std::cout<<tmp<<std::endl;
                 bool ret = blog_system::MysqlQuery(_mysql,tmp);
                 if(ret == false)
                 {
@@ -282,7 +282,7 @@ namespace blog_system
             }
             bool Delete(int blog_id)
             {
-#define DELETE_BLOG "delete from table_blog where id =%d;"
+#define DELETE_BLOG "delete from table_blog where id ='%d';"
                 char tmp[4096]={0};
                 sprintf(tmp,DELETE_BLOG,blog_id);
                 bool ret = blog_system::MysqlQuery(_mysql,tmp);
@@ -294,9 +294,9 @@ namespace blog_system
             }
             bool Update(int blog_id,Json::Value& blog)
             {
-#define UPDATE_BLOG "update table_user set tag_id =%d,title='%s',content='%s' where id ='%d';"
+#define UPDATE_BLOG "update table_blog set tag_id ='%d',user_id='%d',title='%s',content='%s' where id ='%d';"
                 char tmp[4096]={0};
-                sprintf(tmp,UPDATE_BLOG,blog["id"].asInt(),blog["title"].asCString(),blog["content"].asCString(),blog_id);
+                sprintf(tmp,UPDATE_BLOG,blog["tag_id"].asInt(),blog["user_id"].asInt(),blog["title"].asCString(),blog["content"].asCString(),blog_id);
                 bool ret =blog_system::MysqlQuery(_mysql,tmp);
                 if (ret == false)
                     return false;
@@ -340,7 +340,7 @@ namespace blog_system
             bool GetTag(int tag_id,Json::Value* blogs)
             {
                 int i=0;
-#define SELECT_BLOG_TAG "select * from table_blog where tag_id =%d;"
+#define SELECT_BLOG_TAG "select * from table_blog where tag_id ='%d';"
                 char tmp[4096]={0};
                 sprintf(tmp,SELECT_BLOG_TAG,tag_id);
                 bool ret =blog_system::MysqlQuery(_mysql,tmp);
@@ -377,7 +377,7 @@ namespace blog_system
             bool GetUser(int user_id,Json::Value* blogs)
             {
                 int i=0;
-#define SELECT_BLOG_USER "select * from table_blog where user_id =%d;"
+#define SELECT_BLOG_USER "select * from table_blog where user_id ='%d';"
                 char tmp[4096]={0};
                 sprintf(tmp,SELECT_BLOG_USER,user_id);
                 bool ret =blog_system::MysqlQuery(_mysql,tmp);
@@ -414,7 +414,7 @@ namespace blog_system
             bool GetBlog(int tag_id,Json::Value* blog)
             {
                 int i=0;
-#define SELECT_BLOG_ONE "select * from table_blog where id =%d;"
+#define SELECT_BLOG_ONE "select * from table_blog where id ='%d';"
                 char tmp[4096]={0};
                 sprintf(tmp,SELECT_BLOG_ONE,tag_id);
                 bool ret =blog_system::MysqlQuery(_mysql,tmp);

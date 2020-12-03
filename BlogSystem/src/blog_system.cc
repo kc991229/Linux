@@ -384,7 +384,7 @@ int main()
     server.Delete(R"(/user/(\d+))",DeleteUser);
     server.Put(R"(/user/(\d+))",UpdateUser);
     server.Get(R"(/user)",GetAllUser);
-    server.Get(R"( /user/(\d+))",GetOneUser);
+    server.Get(R"(/user/(\d+))",GetOneUser);
 
     server.Post(R"(/tag)",InsertTag);
     server.Delete(R"(/tag/(\d+))",DeleteTag);

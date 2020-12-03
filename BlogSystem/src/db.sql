@@ -16,6 +16,7 @@ create table if not exists table_blog(
     tag_id int comment"标签id",
     user_id int comment "用户id",
     title varchar(255) comment "标题",
+    content text comment "文章内容",
     ctime datetime comment "最后修改时间",
     foreign key (tag_id) references table_tag(id),
     foreign key (user_id) references table_user(id)
