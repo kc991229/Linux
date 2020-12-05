@@ -40,7 +40,7 @@ void InsertUser(const httplib::Request& req,httplib::Response& rsp)
     //2.将得到的字符串解析成为json_value对象
     Json::Reader reader;
     Json::Value root;
-    int ret=reader.parse(json_str,root);
+    int ret=reader.parse(json_str,root);//该函数可以将一个string字符串转为一个Json::Value对象
     if (ret == false)
     {
         printf("insert user info parse json faild \n");
