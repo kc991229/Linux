@@ -5,8 +5,10 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-char g_Command[1024];
+char g_Command[2048];
 
+
+//实现bash命令
 int GetCommand()
 {
      memset(g_Command, '\0', sizeof(g_Command)); 
@@ -19,6 +21,7 @@ int GetCommand()
      }
      return 0;
 }
+//调用函数启动shell命令
 int ExecCommand(char* argv[])
 {
      if(argv[0] == NULL)
