@@ -3,8 +3,9 @@
 #include <vector>
 #include <unordered_map>
 #include <fstream>
-
+#include <boost/algorithm/string.hpp>
 using std::string;
+using std::vector;
 namespace public_function
 {
     class Util
@@ -29,5 +30,12 @@ namespace public_function
                file.close();
                return true;
             }
+        public:
+            static void Spilt(const string& str,const string& delimiter,vector<string>* output)
+                
+    {
+        //boost中的切割接口中，输出、输入、分隔符、是否压缩
+        boost::split(*output,str,boost::is_any_of(delimiter),boost::token_compress_off);
+    }
     };
 }//public public_function 

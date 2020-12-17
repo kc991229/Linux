@@ -1,6 +1,6 @@
 FLAG= -std=c++11 -lboost_filesystem  -lboost_system
 
-parse:parser.cc
+parse:parse.cc
 	g++ $^ -o $@ $(FLAG)
 
 .PHONY:clean
