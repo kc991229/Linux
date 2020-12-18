@@ -1,8 +1,6 @@
 #include "searcher.hpp"
-#include "../common/public.hpp"
 
 
-#include "../common/public.hpp"
 namespace searcher
 {
     const char* const DICT_PATH = "../jieba_dict/jieba.dict.utf8";
@@ -10,9 +8,11 @@ namespace searcher
     const char* const USER_DICT_PATH = "../jieba_dict/user.dict.utf8";
     const char* const IDF_PATH = "../jieba_dict/idf.utf8";
     const char* const STOP_WORD_PATH = "../jieba_dict/stop_words.utf8";
+
     Index::Index()
         :jieba(DICT_PATH,HMM_PATH,USER_DICT_PATH,IDF_PATH,STOP_WORD_PATH)
     {}
+
     const DocInfo* Index::GetDocInfo(int64_t doc_id)
     {
         if (doc_id <0 || doc_id > forward_index.size())
@@ -33,11 +33,16 @@ namespace searcher
         return &it->second;
     }
 
+ //   void Index::Cut_Word(const string& input,vector<string>* output) 
+ //   {    
+ //       jieba.CutForSearch(input,*output);
+ //   }
     DocInfo* Index:: BuildForward(const string& line)
     {
         //1.把line按照/3切割成3部分
         vector<string> tokens;
-        public_function::Util::Spilt(line,"\3",&tokens);
+        searcher::Index::Spilt(line,"\3",&tokens);
+        //public_function::Util::Spilt(line,"\3",&tokens);
         if (tokens.size()!= 3)
         {
             cout<<"切割异常size="<<tokens.size()<<endl;
@@ -53,17 +58,54 @@ namespace searcher
         //3.返回给用户，注意野指针问题
         return &forward_index.back();
     }
-    void BuildInverted(const DocInfo* doc_info)
+    void Index::BuildInverted(const DocInfo* doc_info)
     {
+        //用来存储单词词频
+        struct word_cnt
+        {
+            int title_cnt;
+            int content_cnt;
+            word_cnt()
+            {
+                title_cnt=0;
+                content_cnt=0;
+            }
+        };
+        unordered_map<string, word_cnt> word_cnt_map;
+
         //1.针对标题进行分词
+        vector<string> title_token;
+        Cut_Word(doc_info->title,&title_token );
         //2.遍历结果集，统计每个词的次数
+        //要考虑将大小写问题.因此要先转小写
+        for (string word: title_token)
+        {
+            boost::to_lower(word);
+            word_cnt_map[word].title_cnt++;
+        }
         //3.针对正文进行分词
+        vector<string> content_token;
+        Cut_Word(doc_info->content,&content_token);
         //4.遍历结果集，统计每个词的次数
+        for (string word :content_token)
+        {
+            boost::to_lower(word);
+            word_cnt_map[word].content_cnt++;
+        }
         //5.根据两个结果集，构建Weight
-    }
-    void Index::CutWord(const string& input,vector<string>* output)
-    {
-        jieba.CutForSearch(input,*output);
+        //word_pair用来遍历哈希表中的键值对
+        for (const auto word_pair: word_cnt_map)
+        {
+            Weight weight;
+            weight.doc_id=doc_info->doc_id;
+            weight.weight=word_pair.second.title_cnt*10+word_pair.second.content_cnt;
+            weight.word=word_pair.first;
+
+            //将创建好的索引加入到倒排中
+            //先找到对应的倒排拉链，随后插入
+            vector<Weight>& invertedlist =inverted_index[word_pair.first];
+           invertedlist.push_back(std::move(weight));
+        }
     }
     bool Index::Build(const string& input_path)
     {
@@ -85,18 +127,17 @@ namespace searcher
                 cout<<"构建正排索引失败"<<endl;
                 continue;
             }
+
             //3.根据正排索引，构建倒排索引
             BuildInverted(doc_info);
+            if (doc_info->doc_id %100 ==0)
+            {
+                cout<<"已经处理:"<<doc_info->doc_id<<endl;
+            }
         }
         cout<<"索引构造结束"<<endl;
-
+        file.close();
         return true;
     }
 
-    //自定义切割接口，参数为输入字符、分隔符、结果
-    static void Spilt(const string& str,const string& delimiter,vector<string>* output)
-    {
-        //boost中的切割接口中，输出、输入、分隔符、是否压缩
-        boost::split(*output,str,boost::is_any_of(delimiter),boost::token_compress_off);
-    }
 }//end searcher 
