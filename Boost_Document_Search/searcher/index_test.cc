@@ -14,7 +14,8 @@ int main()
     {
         cout<<"doc_id="<<weight.doc_id<<"   weight="<<weight.weight<<endl;
         auto* doc_info=index.GetDocInfo(weight.doc_id);
-        cout<<"title :"<<doc_info->title<<endl;
+        cout<<"title :"<<doc_info->title<<"   url："<<doc_info->url<<endl<<"content："<<doc_info->content<<endl;
+        cout<<"-------------------------------------------------------------------------------------------"<<endl;
     }
     return 0;
 }

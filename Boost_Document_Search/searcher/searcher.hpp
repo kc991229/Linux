@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <stdint.h>
 #include <fstream>
+#include <algorithm>
+#include "jsoncpp/json/json.h"
 #include <boost/algorithm/string.hpp>
 #include "../include/cppjieba/Jieba.hpp"
 #include "../common/public.hpp"
@@ -20,7 +22,7 @@ namespace searcher
 /////////////////////////////////////////////////////////////////////////////////// 
 //                   索引模块内容                                                //
 ///////////////////////////////////////////////////////////////////////////////////  
-    //正拍索引用到的节点 
+    //正排索引用到的节点 
     struct DocInfo
     {
         int64_t doc_id;//文档id
@@ -39,12 +41,12 @@ namespace searcher
     //这是一个倒排索引的拉链
 typedef vector<Weight> inverted_list;
 
+    //该类提供了构建索引的函数以及用户调用API接口
     class Index
     {
         public:
             Index();
-            //提供构建索引的函数以及用户调用API接口
-            
+
             //根据id得到正排索引 
             const DocInfo* GetDocInfo(int64_t doc_id);
 
@@ -60,6 +62,11 @@ typedef vector<Weight> inverted_list;
                 //boost中的切割接口中，输出、输入、分隔符、是否压缩                                                               
                 boost::split(*output,str,boost::is_any_of(delimiter),boost::token_compress_off);
             }
+            bool Cut_Word(const string& input,vector<string>* output)
+            {
+                jieba.CutForSearch(input,*output);
+                return true;
+            }
         private:
             cppjieba::Jieba jieba;
             //正排索引，用vector存储，每个文档id对应下表即可
@@ -69,15 +76,19 @@ typedef vector<Weight> inverted_list;
         private:
             DocInfo*  BuildForward(const string& line);
             void BuildInverted(const DocInfo* doc_info);
-            bool Cut_Word(const string& input,vector<string>* output)
-            {
-                jieba.CutForSearch(input,*output);
-                return true;
-            }
     };
-/////////////////////////////////////////
-/////// 搜索模块内容////////////////////
-/////////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////// 
+///////                        搜索模块内容                               ////////
+//////////////////////////////////////////////////////////////////////////////////
 
+class Searcher
+{
+    private:
+        searcher::Index* index;
+    public:
+        bool Init(const string& input_path);
+        bool Search(const string& query,string* output);
+        string GenerateDesc(const string& content,const string& word);
+};
 
 }//searcher

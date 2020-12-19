@@ -1,8 +1,11 @@
 #include "searcher.hpp"
-
+using std::cerr;
 
 namespace searcher
 {
+    ///////////////////////////////////////////////////////////////////////////////
+    /////                      以下为索引模块函数实现                      ////////
+    ///////////////////////////////////////////////////////////////////////////////
     const char* const DICT_PATH = "../jieba_dict/jieba.dict.utf8";
     const char* const HMM_PATH = "../jieba_dict/hmm_model.utf8";
     const char* const USER_DICT_PATH = "../jieba_dict/user.dict.utf8";
@@ -110,11 +113,11 @@ namespace searcher
     bool Index::Build(const string& input_path)
     {
         //1.根据预处理模块创建的文件(raw_input)，读取内容,该文件是一个行文本文件，并用/3分割成了三块:title、url、content
-        cout<<"开始构造索引"<<endl;
+        cerr<<"开始构造索引"<<endl;
         std::ifstream file(input_path);
         if (!file.is_open())
         {
-            cout<<"打开raw_input文件失败"<<endl;
+            cerr<<"打开raw_input文件失败"<<endl;
             return false;;
         }
         string line;
@@ -124,7 +127,7 @@ namespace searcher
             DocInfo* doc_info=BuildForward(line);
             if (doc_info == nullptr)
             {
-                cout<<"构建正排索引失败"<<endl;
+                cerr<<"构建正排索引失败"<<endl;
                 continue;
             }
 
@@ -132,12 +135,98 @@ namespace searcher
             BuildInverted(doc_info);
             if (doc_info->doc_id %100 ==0)
             {
-                cout<<"已经处理:"<<doc_info->doc_id<<endl;
+                cerr<<"已经处理:"<<doc_info->doc_id<<endl;
             }
         }
-        cout<<"索引构造结束"<<endl;
+        cerr<<"索引构造结束"<<endl;
         file.close();
         return true;
     }
+////////////////////////////////////////////////////////////////////////////////////////
+///////                            以下为搜索模块函数实现                         //////
+////////////////////////////////////////////////////////////////////////////////////////
 
+    //初始化函数
+    bool Searcher::Init(const string& input_path)
+    {
+        return  index->Build(input_path);
+    }
+    //根据查询词进行搜索，得到结果
+    bool Searcher::Search(const string& query,string* output)
+    {
+        //1.分词。针对查询词进行分词
+        vector<string> tokens;
+        index->Cut_Word(query,&tokens);
+        //2.触发。根据分词结果，查倒排，获取相关文档
+        vector<Weight> all_token_result;
+        for (string word : tokens)
+        {
+            //进行大小写统一化
+            boost::to_lower(word);
+            auto* inverted_list =index->GetInverted(word);
+            if (inverted_list == nullptr)
+            {
+                //若该单词在倒排索引中并不存在，得到的就是nullptr
+                continue;
+            }
+            all_token_result.insert(all_token_result.end(),inverted_list->begin(),inverted_list->end());
+        }
+        //3.排序。将查找到的文档根据权重进行降序排序
+        std::sort(all_token_result.begin(),all_token_result.end(),[](const Weight& w1,const Weight& w2){
+                return w1.weight>w2.weight ;
+                });//采用lambda表达式
+
+        //4.包装。把得到的倒排拉链中的文档id获取，进而查正排，把doc_info中的内容构造
+        //构造采用json格式
+        Json::Value results;//该对象中可能包含多个搜索结果
+        for (const auto& weight:all_token_result)
+        {
+            const DocInfo* doc_info= index->GetDocInfo(weight.doc_id);
+            //将doc_info对象包装成一个json
+            Json::Value result;
+            result["title"]=doc_info->title;
+            result["url"]=doc_info->url;
+            result["desc"]=GenerateDesc(doc_info->content,weight.word);
+            results.append(result);
+        }
+
+        //5.将得到的results这个JSON对象序列化成字符串，写入output
+        Json::FastWriter writer;
+        *output=writer.write(results);
+        return true;
+    }
+    string Searcher::GenerateDesc(const string& content,const string& word)
+    {
+        //根据正文，找到word的出现位置
+        //以位置为中心。向前找60个单词，作为描述的开始处
+        //再从起始位置向后找100个单词，作为结束位置
+        size_t frist_pos = content.find(word);
+        size_t desc_beg=0;
+        if (frist_pos == string ::npos)
+        {
+            //若该词在正文中未出现，仅仅存在于标题，以开头为初始位置
+            if (content.size() <160)
+            {
+                return content;
+            }
+            string desc=content.substr(0,160);
+            desc[desc.size()-1] = '.';
+            desc[desc.size()-2] = '.';
+            desc[desc.size()-3] = '.';
+            return desc;
+        }
+        desc_beg = frist_pos <60? 0:frist_pos -60;
+        if (desc_beg+160 >= content.size())
+        {
+            return content.substr(desc_beg);
+        }
+        else
+        {
+            string desc =content.substr(desc_beg,160);
+            desc[desc.size()-1] = '.';
+            desc[desc.size()-2] = '.';
+            desc[desc.size()-3] = '.';
+            return desc;
+        }
+    }
 }//end searcher 
