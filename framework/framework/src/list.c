@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// 初始化链表
+// 初始化链表,自定义
 list_t *list_init() 
 {
 	list_t *p = (list_t*)malloc(sizeof(list_t));
@@ -13,7 +13,7 @@ list_t *list_init()
 	p->len = 0;
 }
 
-// 往链表中插入数据
+// 往链表中插入数据，简单函数
 int list_insert(list_t *list, const char *key, const char *value)
 {
 	node_t *newnode = (node_t*)malloc(sizeof(node_t));

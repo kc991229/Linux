@@ -4,6 +4,9 @@
 #include <string.h>
 #include <unistd.h>
 
+
+
+
 extern char **environ;
 
 char **g_os_argv; // 命令行参数的起始位置
