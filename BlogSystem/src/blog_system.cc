@@ -36,6 +36,7 @@ void InsertUser(const httplib::Request& req,httplib::Response& rsp)
     //用户的信息在req的body中，是一个string,rsp用于返回状态码
     
     //1.获取json字符串
+    std::cout<<"插入数据"<<std::endl;
     std::string json_str=req.body;
     //2.将得到的字符串解析成为json_value对象
     Json::Reader reader;
@@ -60,6 +61,7 @@ void InsertUser(const httplib::Request& req,httplib::Response& rsp)
 }
 void DeleteUser(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"删除数据"<<std::endl;
     //1.获取用户id，是存放在req.match里的
     int user_id=std::stoi(req.matches[1]);//matched[0]存放的是整个字符串
     //2.执行数据库操作
@@ -74,6 +76,7 @@ void DeleteUser(const httplib::Request& req,httplib::Response& rsp)
 }
 void UpdateUser(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"更改数据"<<std::endl;
     //1.获取用户id,用户操作语句
     int user_id=std::stoi(req.matches[1]);
     std::string str=req.body;
@@ -99,6 +102,8 @@ void UpdateUser(const httplib::Request& req,httplib::Response& rsp)
 }
 void GetAllUser(const httplib::Request& req,httplib::Response& rsp)
 {
+
+    std::cout<<"获取数据"<<std::endl;
     //1.从数据库得到所有的用户信息存于Json::Value
     Json::Value root;
     bool ret =table_user->GetAll(&root);
@@ -118,6 +123,7 @@ void GetAllUser(const httplib::Request& req,httplib::Response& rsp)
 }
 void GetOneUser(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"获取数据"<<std::endl;
     int user_id=std::stoi(req.matches[1]);
     Json::Value root;
     bool ret =table_user->GetOne(user_id,&root);
@@ -135,6 +141,7 @@ void GetOneUser(const httplib::Request& req,httplib::Response& rsp)
 
 void InsertTag(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"插入数据"<<std::endl;
     //用户的信息在req的body中，是一个string,rsp用于返回状态码
     
     //1.获取json字符串
@@ -163,6 +170,7 @@ void InsertTag(const httplib::Request& req,httplib::Response& rsp)
 }
 void DeleteTag(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"删除数据"<<std::endl;
     //1.获取用户id，是存放在req.match里的
     int tag_id=std::stoi(req.matches[1]);//matched[0]存放的是整个字符串
     //2.执行数据库操作
@@ -177,6 +185,7 @@ void DeleteTag(const httplib::Request& req,httplib::Response& rsp)
 }
 void UpdateTag(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"修改数据"<<std::endl;
     //1.获取用户id,用户操作语句
     int tag_id=std::stoi(req.matches[1]);
     std::string str=req.body;
@@ -202,6 +211,7 @@ void UpdateTag(const httplib::Request& req,httplib::Response& rsp)
 }
 void GetAllTag(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"获取数据"<<std::endl;
     //1.从数据库得到所有的用户信息存于Json::Value
     Json::Value root;
     bool ret =table_tag->GetAll(&root);
@@ -221,6 +231,7 @@ void GetAllTag(const httplib::Request& req,httplib::Response& rsp)
 }
 void GetOneTag(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"获取数据"<<std::endl;
     int tag_id=std::stoi(req.matches[1]);
     Json::Value root;
     bool ret =table_tag->GetOne(tag_id,&root);
@@ -238,6 +249,7 @@ void GetOneTag(const httplib::Request& req,httplib::Response& rsp)
 
 void InsertBlog(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"插入数据"<<std::endl;
     //用户的信息在req的body中，是一个string,rsp用于返回状态码
     
     //1.获取json字符串
@@ -266,6 +278,7 @@ void InsertBlog(const httplib::Request& req,httplib::Response& rsp)
 }
 void DeleteBlog(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"删除数据"<<std::endl;
     //1.获取用户id，是存放在req.match里的
     int blog_id=std::stoi(req.matches[1]);//matched[0]存放的是整个字符串
     //2.执行数据库操作
@@ -280,6 +293,7 @@ void DeleteBlog(const httplib::Request& req,httplib::Response& rsp)
 }
 void UpdateBlog(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"修改数据"<<std::endl;
     //1.获取用户id,用户操作语句
     int blog_id=std::stoi(req.matches[1]);
     std::string str=req.body;
@@ -305,6 +319,7 @@ void UpdateBlog(const httplib::Request& req,httplib::Response& rsp)
 }
 void GetAllBlog(const httplib::Request& req,httplib::Response& rsp)
 {
+    std::cout<<"获取数据"<<std::endl;
     //三种情况，blog、tag_id、user_id
     Json::Value root;
     if (req.has_param("tag_id"))
@@ -345,7 +360,8 @@ void GetAllBlog(const httplib::Request& req,httplib::Response& rsp)
     return ;
 }
 void GetOneBlog(const httplib::Request& req,httplib::Response& rsp)
-{ 
+{
+    std::cout<<"获取数据"<<std::endl;
     //1.从req中得到想要获取的博客id
     int blog_id=std::stoi(req.matches[1]);
     //2.从数据库获取内容
