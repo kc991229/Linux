@@ -52,12 +52,12 @@ namespace searcher
         }
         //2.利用切割好的结果填充一个docInfo对象
         DocInfo info;
-        info.doc_id=forward_index.size();
+        info.doc_id=this->forward_index.size();
         info.title=tokens[0];
         info.url=tokens[1];
         info.content=tokens[2];
         //将info设定为右值，这样可以调用push_back的特殊接口，直接转移即将被销毁的info
-        forward_index.push_back(std::move(info));
+        this->forward_index.push_back(std::move(info));
         //3.返回给用户，注意野指针问题
         return &forward_index.back();
     }
@@ -149,7 +149,7 @@ namespace searcher
     //初始化函数
     bool Searcher::Init(const string& input_path)
     {
-        return  index->Build(input_path);
+        return this->index->Build(input_path);
     }
     //根据查询词进行搜索，得到结果
     bool Searcher::Search(const string& query,string* output)

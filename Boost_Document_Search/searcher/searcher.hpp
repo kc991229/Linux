@@ -86,6 +86,9 @@ class Searcher
     private:
         searcher::Index* index;
     public:
+        Searcher()
+            :index(new Index())
+        {}
         bool Init(const string& input_path);
         bool Search(const string& query,string* output);
         string GenerateDesc(const string& content,const string& word);
