@@ -87,7 +87,7 @@ class Searcher
         searcher::Index* index;
     public:
         Searcher()
-            :index(new Index())
+            :index(new Index())//初始化一定要，就是因为这个错误害我找了两个小时
         {}
         bool Init(const string& input_path);
         bool Search(const string& query,string* output);
