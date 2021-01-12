@@ -12,6 +12,7 @@ using std::cout;
 using std::endl;
 int main()
 {
+    //用httplib库构建一个简单服务器
     using namespace httplib;
 
     //1.创建Searcher对象
